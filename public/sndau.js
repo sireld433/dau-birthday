@@ -114,7 +114,9 @@ async function startBirthday() {
     if (!res.ok || !data.ok) {
       showPasswordError(res.status === 429
         ? 'Thử quá nhiều lần, đợi chút nhé ⏳'
-        : 'Sai mật khẩu rồi, thử lại nhé 🥺');
+        : res.status >= 500
+          ? 'Server đang lỗi (mã ' + res.status + ') 😢'
+          : 'Sai mật khẩu rồi, thử lại nhé 🥺');
       return;
     }
   } catch (err) {
