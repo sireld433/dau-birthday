@@ -3,6 +3,7 @@ const path = require('path');
 const { verifyPassword } = require('./db');
 
 const app = express();
+app.set('trust proxy', 1); // Render đứng sau proxy, cần để lấy đúng IP
 app.use(express.json({ limit: '1kb' }));
 
 // Chống dò mật khẩu: tối đa 5 lần sai / 10 phút / IP
@@ -34,4 +35,4 @@ app.post('/api/login', (req, res) => {
 app.use(express.static(path.join(__dirname, 'public'), { index: 'sndau.html' }));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Chạy tại http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🎂 Chạy tại http://localhost:${PORT}`));

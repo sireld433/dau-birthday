@@ -2,12 +2,15 @@
   "name": "birthday-card",
   "version": "1.0.0",
   "private": true,
+  "engines": { "node": ">=20" },
   "scripts": {
     "start": "node server.js",
     "set-password": "node set-password.js"
   },
   "dependencies": {
-    "better-sqlite3": "^11.3.0",
     "express": "^4.19.2"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.3.0"
   }
 }
