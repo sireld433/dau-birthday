@@ -21,7 +21,16 @@ app.post('/api/login', (req, res) => {
   }
 
   const password = typeof req.body.password === 'string' ? req.body.password : '';
-  if (password && password.length <= 64 && verifyPassword(password)) {
+  let ok = false;
+  try {
+    ok = !!password && password.length <= 64 && verifyPassword(password);
+  } catch (err) {
+    // Lỗi thật của server (ví dụ thiếu biến môi trường và không có SQLite) -> ghi vào Logs
+    console.error('LOGIN ERROR:', err.message);
+    return res.status(500).json({ ok: false, error: 'server' });
+  }
+  console.log('LOGIN', ok ? 'OK' : 'WRONG', 'pwlen=' + password.length);
+  if (ok) {
     fails.delete(ip);
     return res.json({ ok: true });
   }
@@ -30,6 +39,19 @@ app.post('/api/login', (req, res) => {
   r.count++;
   fails.set(ip, r);
   res.status(401).json({ ok: false });
+});
+
+// Chẩn đoán: mở /api/health để xem server đã nhận biến môi trường chưa (không lộ giá trị)
+app.get('/api/health', (req, res) => {
+  const salt = process.env.PASSWORD_SALT || '';
+  const hash = process.env.PASSWORD_HASH || '';
+  res.json({
+    node: process.version,
+    saltLength: salt.length,   // phải là 32
+    hashLength: hash.length,   // phải là 128
+    saltHasSpace: salt !== salt.trim(),
+    hashHasSpace: hash !== hash.trim()
+  });
 });
 
 app.use(express.static(path.join(__dirname, 'public'), { index: 'sndau.html' }));

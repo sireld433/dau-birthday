@@ -1,271 +1,1029 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Birthday 🎂</title>
-<link rel="stylesheet" href="style/sndau.css">
-<link rel="stylesheet" href="style/finaledau.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet"> -->
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Mali:wght@500;600&family=Patrick+Hand&family=Pacifico&display=swap" rel="stylesheet">
-</head>
-<body>
+// ===== DANH SÁCH ẢNH CHIIKAWA =====
+const chiiImages = [
+  'img/chiikawa1.png',
+  'img/chiikawa2.png',
+  'img/chiikawa3.png',
+  'img/chiikawa5.png',
+  'img/momonga2.png',
+  'img/momonga3.png'
+];
 
-<div class="name-modal" id="nameModal">
-  <div class="name-box">
-    <span class="emoji-big">🎂</span>
-    <h2>Chào mừng bạn đến với thiệp sinh nhật!</h2>
-    <p>Nhập mật khẩu để mở thiệp 🔐</p>
-    <input type="password" id="passwordInput" placeholder="Mật khẩu..." maxlength="64" autocomplete="off">
-    <button id="startBtn">Mở thiệp 🎉</button>
-  </div>
-</div>
+// ===== LẤY PHẦN TỬ DOM =====
+const nameModal    = document.getElementById('nameModal');
+const passwordInput = document.getElementById('passwordInput');
+const FIXED_NAME   = 'Dâu';
+const startBtn     = document.getElementById('startBtn');
+const mainScreen   = document.getElementById('mainScreen');
+const displayName  = document.getElementById('displayName');
+const cardName     = document.getElementById('cardName');
+const musicBtn     = document.getElementById('musicBtn');
+const bgMusic      = document.getElementById('bgMusic');
+const continueBtn  = document.getElementById('continueBtn');
+const letterScreen = document.getElementById('letterScreen');
 
-<button class="music-btn" id="musicBtn" title="Bật/tắt nhạc">🎵</button>
-<audio id="bgMusic" preload="auto"></audio>
+// ===== BIẾN DÙNG CHUNG (khai báo sớm để tránh lỗi) =====
+const cakeScreen       = document.getElementById('cakeScreen');
+const wishBtn          = document.getElementById('wishBtn');
+const wishMessage      = document.getElementById('wishMessage');
+const confettiCanvas   = document.getElementById('confettiCanvas');
+const confettiCtx      = confettiCanvas ? confettiCanvas.getContext('2d') : null;
 
-<div class="main-screen" id="mainScreen">
+let confettiParticles   = [];
+let confettiActive      = false;
+let confettiAnimationId = null;
+let wishDone            = false;
 
-  <div class="main-chii">
-    <img src="img/momonga4b.png" alt="Chiikawa" class="main-chii-img">
-  </div>
+// ===== VỊ TRÍ ẢNH BAY XUNG QUANH MÀN HÌNH CHÍNH =====
+const FIXED_POSITIONS = [
+  // === HÀNG TRÊN ===
+  { src: 'img/chiikawa1.png', top: 5,  left: 8,  size: 55, delay: 0,   duration: 3 },
+  { src: 'img/momonga2.png',  top: 3,  left: 22, size: 45, delay: 0.8, duration: 2.8 },
+  { src: 'img/chiikawa2.png', top: 20, left: 30, size: 50, delay: 1.5, duration: 3.2 },
+  { src: 'img/momonga3.png',  top: 4,  left: 60, size: 48, delay: 0.4, duration: 2.6 },
+  { src: 'img/chiikawa3.png', top: 7,  left: 78, size: 52, delay: 1.2, duration: 3.4 },
+  { src: 'img/momonga3.png',  top: 5,  left: 92, size: 45, delay: 1.8, duration: 2.9 },
 
-  <div class="title">
-    Happy Birthday to <span class="name" id="displayName">Hello!</span>
-  </div>
-  <div class="subtitle">~ Chúc mừng sinh nhật ~</div>
+  // === HÀNG GIỮA (hai bên) ===
+  { src: 'img/chiikawa5.png', top: 40, left: 3,  size: 50, delay: 0.6, duration: 3.1 },
+  { src: 'img/momonga2.png',  top: 55, left: 15, size: 45, delay: 1.4, duration: 2.7 },
+  { src: 'img/chiikawa1.png', top: 38, left: 90, size: 48, delay: 0.2, duration: 3.3 },
+  { src: 'img/momonga1.png',  top: 58, left: 90, size: 50, delay: 1.0, duration: 2.8 },
 
-  <!-- Thiệp -->
-  <div class="card">
-    <p>🎂 Hôm nay là ngày đặc biệt của <b id="cardName">bạn</b>!</p>
-    <p class="small">Mình có chuẩn bị một chút điều bất ngờ...</p>
-    <p class="pink">Bạn có muốn xem không?</p>
-  </div>
+  // === HÀNG DƯỚI ===
+  { src: 'img/chiikawa2.png', top: 78, left: 12, size: 52, delay: 0.9, duration: 3.0 },
+  { src: 'img/momonga2.png',  top: 82, left: 30, size: 45, delay: 1.6, duration: 2.5 },
+  { src: 'img/chiikawa3.png', top: 70, left: 75, size: 48, delay: 0.3, duration: 3.2 },
+  { src: 'img/momonga3.png',  top: 85, left: 90, size: 50, delay: 1.1, duration: 2.9 },
+  { src: 'img/chiikawa5.png', top: 88, left: 60, size: 42, delay: 0.7, duration: 3.1 },
+];
 
-  <button class="btn-continue" id="continueBtn">Tiếp tục →</button>
+// ===== TẠO ẢNH BAY XUNG QUANH MÀN HÌNH CHÍNH =====
+function spawnFloatingChii() {
+  const isMobile = window.innerWidth < 600;
+  const FIXED_SIZE = 75;
 
-  <div class="footer">Made with &gt;_433</div>
-</div>
+  FIXED_POSITIONS.forEach((pos, index) => {
+    if (isMobile && index % 2 === 1) return;
 
-<!-- ===== MÀN HÌNH CHÚC MỪNG ===== -->
-<div class="congrats-screen" id="congratsScreen">
+    const img = document.createElement('img');
+    img.className = 'floating-chii';
+    img.src = pos.src;
+    img.alt = '';
 
-  <!-- Dây treo Happy Birthday -->
-  <div class="bunting" id="bunting">
-    <!-- SVG dây cung -->
-    <svg class="bunting-rope" viewBox="0 0 1200 200" preserveAspectRatio="none">
-      <path d="M 0 20 Q 300 100, 600 60 T 1200 20" 
-            fill="none" stroke="#ffb6d5" stroke-width="3"/>
-      <path d="M 0 50 Q 300 130, 600 90 T 1200 50" 
-            fill="none" stroke="#ffd7a8" stroke-width="3"/>
-    </svg>
+    img.style.top = pos.top + '%';
+    img.style.left = pos.left + '%';
 
-    <!-- Các lá cờ tam giác -->
-    <div class="bunting-flags">
-      <div class="flag" style="--color: #ffb6d5; --delay: 0s;">H</div>
-      <div class="flag" style="--color: #ffd7a8; --delay: 0.2s;">A</div>
-      <div class="flag" style="--color: #c9e8ff; --delay: 0.4s;">P</div>
-      <div class="flag" style="--color: #ffb6d5; --delay: 0.6s;">P</div>
-      <div class="flag" style="--color: #ffd7a8; --delay: 0.8s;">Y</div>
-      <div class="flag space" style="--color: transparent;"> </div>
-      <div class="flag" style="--color: #c9e8ff; --delay: 1s;">B</div>
-      <div class="flag" style="--color: #ffb6d5; --delay: 1.2s;">I</div>
-      <div class="flag" style="--color: #ffd7a8; --delay: 1.4s;">R</div>
-      <div class="flag" style="--color: #c9e8ff; --delay: 1.6s;">T</div>
-      <div class="flag" style="--color: #ffb6d5; --delay: 1.8s;">H</div>
-      <div class="flag" style="--color: #ffd7a8; --delay: 2s;">D</div>
-      <div class="flag" style="--color: #c9e8ff; --delay: 2.2s;">A</div>
-      <div class="flag" style="--color: #ffb6d5; --delay: 2.4s;">Y</div>
-    </div>
-  </div>
+    const size = isMobile ? FIXED_SIZE * 0.75 : FIXED_SIZE;
+    img.style.width = size + 'px';
+    img.style.height = 'auto';
+    img.style.animationDelay = pos.delay + 's';
+    img.style.animationDuration = pos.duration + 's';
 
-  <!-- Ảnh Chiikawa trang trí (JS sẽ tạo) -->
-  <div class="congrats-decorations" id="congratsDecorations"></div>
+    mainScreen.appendChild(img);
+  });
+}
 
-  <!-- Nội dung chính -->
-  <div class="congrats-content">
-    <div class="avatar-wrap">
-      <img src="img/dau.jpeg" alt="Avatar" class="congrats-avatar" id="congratsAvatar">
-    </div>
-    <h1 class="congrats-title" id="congratsTitle">Happy Birthday</h1>
-    <p class="congrats-name" id="congratsName"></p>
-  </div>
+// ===== BẮT ĐẦU (kiểm tra mật khẩu qua server) =====
+let isChecking = false;
 
-  <button class="btn-continue btn-next" id="nextBtn">Tiếp tục →</button>
+function showPasswordError(msg) {
+  passwordInput.style.borderColor = '#ff6fa8';
+  passwordInput.value = '';
+  passwordInput.placeholder = msg;
+  passwordInput.focus();
+}
 
-  <!-- Canvas pháo hoa -->
-  <canvas id="fireworksCanvas"></canvas>
-</div>
+async function startBirthday() {
+  if (isChecking) return;
+  const password = passwordInput.value;
+  if (!password) {
+    showPasswordError('Bạn chưa nhập mật khẩu kìa ~ 🥺');
+    return;
+  }
 
-<div class="letter-screen" id="letterScreen">
+  isChecking = true;
+  startBtn.disabled = true;
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
+    const data = await res.json().catch(() => ({}));
 
-  <div class="letter-card">
-    <div class="letter-sticker letter-sticker-tl">🌸</div>
-    <div class="letter-sticker letter-sticker-tr">🎀</div>
+    if (!res.ok || !data.ok) {
+      showPasswordError(res.status === 429
+        ? 'Thử quá nhiều lần, đợi chút nhé ⏳'
+        : res.status >= 500
+          ? 'Server đang lỗi (mã ' + res.status + ') 😢'
+          : 'Sai mật khẩu rồi, thử lại nhé 🥺');
+      return;
+    }
+  } catch (err) {
+    showPasswordError('Không kết nối được server 😢');
+    return;
+  } finally {
+    isChecking = false;
+    startBtn.disabled = false;
+  }
 
-    <h2 class="letter-title" id="letterTitle">Tiêu đề</h2>
-    <div class="letter-divider"></div>
+  displayName.textContent = FIXED_NAME + '!';
+  cardName.textContent = FIXED_NAME;
 
-    <div class="letter-body" id="letterBody">
-      <p>Bạn sẽ viết lời chúc ở đây.</p>
-    </div>
+  nameModal.classList.add('hide');
 
-    <div class="letter-signature">
-      <span>Trân trọng,</span>
-      <strong>Người gửi </strong>
-    </div>
-  </div>
+  setTimeout(() => {
+    mainScreen.classList.add('show');
+    spawnFloatingChii();
+  }, 300);
 
-  <button class="btn-continue btn-letter-close" id="letterCloseBtn">Đóng thiệp</button>
-</div>
+  tryPlayMusic();
+}
 
-<div class="cake-screen" id="cakeScreen">
+// ===== NHẠC =====
+const playlist = [
+  'music/CarelessWhisper.mp3',
+  'music/CarelessWhisper.mp3',
+];
 
-  <div class="cake-circle"></div>
+let currentTrack = 0;
+let musicOn = false;
+let isShuffle = false;
 
-  <div class="cake-wrap">
-    <svg class="cake-svg" viewBox="0 0 300 320" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="150" cy="295" rx="140" ry="12" fill="#ffd7e5" opacity="0.6"/>
+function playTrack(index) {
+  currentTrack = index;
+  bgMusic.src = playlist[currentTrack];
+  bgMusic.load();
+  bgMusic.volume = 0.5;
 
-      <rect x="40" y="230" width="220" height="60" rx="8" fill="#f5c98e"/>
-      <rect x="40" y="230" width="220" height="60" rx="8" fill="url(#tier1Shade)"/>
- 
-      <path d="M 40 230 Q 60 250 80 230 Q 100 255 120 230 Q 140 255 160 230 Q 180 255 200 230 Q 220 250 260 230 L 260 240 L 40 240 Z" fill="#fffaf0"/>
+  bgMusic.play().then(() => {
+    musicOn = true;
+    musicBtn.classList.add('playing');
+  }).catch((err) => {
+    console.log('Không thể phát nhạc:', err);
+  });
+}
 
-      <rect x="65" y="165" width="170" height="70" rx="8" fill="#f5c98e"/>
-      <rect x="65" y="165" width="170" height="70" rx="8" fill="url(#tier2Shade)"/>
+function playNextTrack() {
+  let nextIndex;
+  if (isShuffle) {
+    do {
+      nextIndex = Math.floor(Math.random() * playlist.length);
+    } while (nextIndex === currentTrack && playlist.length > 1);
+  } else {
+    nextIndex = (currentTrack + 1) % playlist.length;
+  }
+  playTrack(nextIndex);
+}
 
-      <path d="M 65 165 Q 85 185 105 165 Q 125 190 145 165 Q 165 190 185 165 Q 205 185 235 165 L 235 175 L 65 175 Z" fill="#fffaf0"/>
-   
-      <circle cx="100" cy="200" r="3" fill="#ffb6d5"/>
-      <circle cx="130" cy="210" r="3" fill="#ffb6d5"/>
-      <circle cx="160" cy="200" r="3" fill="#ffb6d5"/>
-      <circle cx="190" cy="210" r="3" fill="#ffb6d5"/>
-      <circle cx="150" cy="215" r="3" fill="#ffb6d5"/>
+bgMusic.addEventListener('ended', playNextTrack);
 
-      <rect x="95" y="110" width="110" height="60" rx="8" fill="#f5c98e"/>
-      <rect x="95" y="110" width="110" height="60" rx="8" fill="url(#tier3Shade)"/>
-  
-      <path d="M 95 110 Q 110 125 125 110 Q 140 130 155 110 Q 170 130 185 110 Q 195 125 205 110 L 205 118 L 95 118 Z" fill="#fffaf0"/>
+function tryPlayMusic() {
+  if (playlist.length === 0) return;
+  playTrack(0);
+}
 
-      <rect x="115" y="65" width="8" height="50" rx="2" fill="#ff8bbf"/>
-      <rect x="135" y="60" width="8" height="55" rx="2" fill="#ffd7a8"/>
-      <rect x="155" y="58" width="8" height="57" rx="2" fill="#c9e8ff"/>
-      <rect x="175" y="65" width="8" height="50" rx="2" fill="#ff8bbf"/>
+function toggleMusic() {
+  if (playlist.length === 0) {
+    alert('Chưa có file nhạc. Bạn thêm link nhạc vào mảng playlist nhé! 🎵');
+    return;
+  }
 
-      <g class="flame flame-1">
-        <ellipse cx="119" cy="58" rx="4" ry="8" fill="#ffd700"/>
-        <ellipse cx="119" cy="58" rx="2" ry="5" fill="#ff6fa8"/>
-      </g>
-      <g class="flame flame-2">
-        <ellipse cx="139" cy="53" rx="4" ry="8" fill="#ffd700"/>
-        <ellipse cx="139" cy="53" rx="2" ry="5" fill="#ff6fa8"/>
-      </g>
-      <g class="flame flame-3">
-        <ellipse cx="159" cy="51" rx="4" ry="8" fill="#ffd700"/>
-        <ellipse cx="159" cy="51" rx="2" ry="5" fill="#ff6fa8"/>
-      </g>
-      <g class="flame flame-4">
-        <ellipse cx="179" cy="58" rx="4" ry="8" fill="#ffd700"/>
-        <ellipse cx="179" cy="58" rx="2" ry="5" fill="#ff6fa8"/>
-      </g>
+  if (musicOn) {
+    bgMusic.pause();
+    musicBtn.classList.remove('playing');
+    musicOn = false;
+  } else {
+    if (!bgMusic.src || bgMusic.src === window.location.href) {
+      playTrack(0);
+    } else {
+      bgMusic.play();
+      musicBtn.classList.add('playing');
+      musicOn = true;
+    }
+  }
+}
 
-      <!-- Định nghĩa gradient bóng -->
-      <defs>
-        <linearGradient id="tier1Shade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="rgba(255,255,255,0.3)"/>
-          <stop offset="100%" stop-color="rgba(200,150,80,0.2)"/>
-        </linearGradient>
-        <linearGradient id="tier2Shade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="rgba(255,255,255,0.3)"/>
-          <stop offset="100%" stop-color="rgba(200,150,80,0.2)"/>
-        </linearGradient>
-        <linearGradient id="tier3Shade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="rgba(255,255,255,0.3)"/>
-          <stop offset="100%" stop-color="rgba(200,150,80,0.2)"/>
-        </linearGradient>
-      </defs>
-    </svg>
-  </div>
+// ===== NÚT TIẾP TỤC (MÀN HÌNH CHÍNH → CHÚC MỪNG) =====
+function continueClick() {
+  const name = FIXED_NAME;
 
-  <!-- Nút "Ước một điều" -->
-  <button class="btn-wish" id="wishBtn">Ước một điều ước 🎂</button>
+  mainScreen.style.transition = 'opacity 0.6s ease';
+  mainScreen.style.opacity = '0';
 
-  <!-- Gợi ý + thanh đo hơi thổi -->
-  <p class="blow-hint" id="blowHint"></p>
-  <div class="blow-meter" id="blowMeter"><i id="blowMeterFill"></i></div>
+  setTimeout(() => {
+    mainScreen.style.display = 'none';
 
-  <!-- Dòng chữ hiện sau khi bấm -->
-  <p class="wish-message" id="wishMessage">Mong rằng điều ước của cậu sẽ thành hiện thực✨</p>
+    const congratsName = document.getElementById('congratsName');
+    if (congratsName) congratsName.textContent = 'Gửi ' + name + ' 💖';
 
-  <!-- Canvas confetti (bắn từ bánh) -->
-  <canvas id="confettiCanvas"></canvas>
-</div>
+    spawnCongratsDecorations();
 
-<!-- ===== MÀN HÌNH ALBUM ẢNH KỶ NIỆM ===== -->
-<div class="album-screen" id="albumScreen">
+    const congratsScreen = document.getElementById('congratsScreen');
+    congratsScreen.style.zIndex = '9999';
+    congratsScreen.classList.add('show');
 
-  <!-- Tiêu đề -->
-  <h2 class="album-title">Kỷ niệm của chúng ta</h2>
+    setTimeout(() => {
+      startFireworks(4000);
+    }, 0);
+  }, 700);
+}
 
-  <!-- Stage chứa track -->
-  <div class="album-stage">
-    <div class="album-track" id="albumTrack">
-      <!-- 5 polaroid: 2 ẩn 2 bên + 3 hiện -->
-      <div class="polaroid" data-pos="-2">
-        <div class="polaroid-img-wrap"><img src="" alt="" class="polaroid-img"></div>
-        <p class="polaroid-caption"></p>
-      </div>
-      <div class="polaroid" data-pos="-1">
-        <div class="polaroid-img-wrap"><img src="" alt="" class="polaroid-img"></div>
-        <p class="polaroid-caption"></p>
-      </div>
-      <div class="polaroid" data-pos="0">
-        <div class="polaroid-img-wrap"><img src="" alt="" class="polaroid-img"></div>
-        <p class="polaroid-caption"></p>
-      </div>
-      <div class="polaroid" data-pos="1">
-        <div class="polaroid-img-wrap"><img src="" alt="" class="polaroid-img"></div>
-        <p class="polaroid-caption"></p>
-      </div>
-      <div class="polaroid" data-pos="2">
-        <div class="polaroid-img-wrap"><img src="" alt="" class="polaroid-img"></div>
-        <p class="polaroid-caption"></p>
-      </div>
-    </div>
-  </div>
+// ===== GẮN SỰ KIỆN CHÍNH =====
+startBtn.addEventListener('click', startBirthday);
 
-  <!-- Điều hướng -->
-  <div class="album-nav">
-    <button class="album-btn" id="albumPrevBtn" aria-label="Ảnh trước">‹</button>
-    <span class="album-counter" id="albumCounter">1 / 1</span>
-    <button class="album-btn" id="albumNextBtn" aria-label="Ảnh sau">›</button>
-  </div>
+passwordInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') startBirthday();
+});
 
-  <!-- Nút tiếp tục -->
-  <button class="btn-continue btn-album-next" id="albumContinueBtn">Tiếp tục →</button>
-</div>
+musicBtn.addEventListener('click', toggleMusic);
 
-</div>
+continueBtn.addEventListener('click', continueClick);
 
-<!-- ===== MÀN HÌNH KẾT: BẦU TRỜI SAO ===== -->
-<div class="sky-screen" id="skyScreen">
-  <canvas id="skyCanvas"></canvas>
-  <div class="sky-moon"></div>
-  <p class="sky-hint" id="skyHint">Chạm vào những ngôi sao đang nhấp nháy ✨</p>
-  <div class="sky-message" id="skyMessage"></div>
-  <div class="sky-counter" id="skyCounter">0 / 9</div>
-  <div class="sky-final" id="skyFinal">
-    <div class="sky-sign" id="skySign"></div>
-    <h2 id="skyFinalTitle"></h2>
-    <p id="skyFinalText"></p>
-    <button class="sky-replay" id="skyReplayBtn">Xem lại từ đầu 🔁</button>
-  </div>
-</div>
+// ===== HIỆU ỨNG PHÁO HOA =====
+const fwCanvas = document.getElementById('fireworksCanvas');
+const fwCtx = fwCanvas ? fwCanvas.getContext('2d') : null;
 
-<script src="sndau.js"></script>
-<script src="finaledau.js"></script>
-</body>
-</html>
+let particles = [];
+let fireworksActive = false;
+let fwAnimationId = null;
+
+function resizeFwCanvas() {
+  if (!fwCanvas) return;
+  fwCanvas.width = window.innerWidth;
+  fwCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeFwCanvas);
+resizeFwCanvas();
+
+function createParticle(x, y, options = {}) {
+  const angle = options.angle ?? (Math.random() * Math.PI * 2);
+  const speed = options.speed ?? (3 + Math.random() * 5);
+  const colors = ['#ff8bbf', '#ffd700', '#7ec8ff', '#b89bff', '#ff6fa8', '#7dffb0', '#ffb347'];
+  const color = options.color ?? colors[Math.floor(Math.random() * colors.length)];
+
+  return {
+    x, y,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    life: options.life ?? 80,
+    maxLife: options.life ?? 80,
+    color,
+    size: options.size ?? (2 + Math.random() * 3),
+    gravity: options.gravity ?? 0.08,
+    shape: options.shape ?? 'circle'
+  };
+}
+
+function launchFirework(side) {
+  if (!fwCanvas) return;
+
+  const canvasW = fwCanvas.width;
+  const canvasH = fwCanvas.height;
+
+  const startX = side === 'left' ? 0 : canvasW;
+  const startY = canvasH;
+
+  const targetX = side === 'left'
+    ? canvasW * (0.15 + Math.random() * 0.2)
+    : canvasW * (0.65 + Math.random() * 0.2);
+  const targetY = canvasH * (0.2 + Math.random() * 0.3);
+
+  const dx = targetX - startX;
+  const dy = targetY - startY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  const speed = 12;
+  const vx = (dx / distance) * speed;
+  const vy = (dy / distance) * speed;
+
+  const rocket = {
+    x: startX,
+    y: startY,
+    vx, vy,
+    targetX, targetY,
+    trail: [],
+    color: ['#ff8bbf', '#ffd700', '#7ec8ff', '#b89bff'][Math.floor(Math.random() * 4)]
+  };
+
+  const rocketInterval = setInterval(() => {
+    rocket.x += rocket.vx;
+    rocket.y += rocket.vy;
+
+    rocket.trail.push({ x: rocket.x, y: rocket.y });
+    if (rocket.trail.length > 12) rocket.trail.shift();
+
+    const distToTarget = Math.sqrt(
+      Math.pow(rocket.x - rocket.targetX, 2) +
+      Math.pow(rocket.y - rocket.targetY, 2)
+    );
+
+    if (distToTarget < 15 || rocket.y < rocket.targetY) {
+      clearInterval(rocketInterval);
+      explodeFirework(rocket.x, rocket.y);
+    }
+  }, 16);
+
+  particles.push({
+    type: 'rocket',
+    rocket,
+    life: 200,
+    maxLife: 200
+  });
+}
+
+function explodeFirework(x, y) {
+  const count = 40 + Math.floor(Math.random() * 30);
+  const colors = ['#ff8bbf', '#ffd700', '#7ec8ff', '#b89bff', '#ff6fa8', '#7dffb0'];
+  const mainColor = colors[Math.floor(Math.random() * colors.length)];
+
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
+    const speed = 3 + Math.random() * 5;
+    const useMainColor = Math.random() > 0.3;
+
+    particles.push(createParticle(x, y, {
+      angle,
+      speed,
+      color: useMainColor ? mainColor : colors[Math.floor(Math.random() * colors.length)],
+      life: 60 + Math.random() * 40,
+      size: 2 + Math.random() * 3,
+      gravity: 0.06,
+      shape: Math.random() > 0.5 ? 'rect' : 'circle'
+    }));
+  }
+}
+
+function drawFireworks() {
+  if (!fwCtx) return;
+
+  fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+
+    if (p.type === 'rocket') {
+      const r = p.rocket;
+      fwCtx.save();
+
+      for (let j = 0; j < r.trail.length; j++) {
+        const t = r.trail[j];
+        const alpha = (j / r.trail.length) * 0.8;
+        fwCtx.globalAlpha = alpha;
+        fwCtx.fillStyle = r.color;
+        fwCtx.beginPath();
+        fwCtx.arc(t.x, t.y, 3 * (j / r.trail.length), 0, Math.PI * 2);
+        fwCtx.fill();
+      }
+
+      fwCtx.globalAlpha = 1;
+      fwCtx.fillStyle = '#fff';
+      fwCtx.beginPath();
+      fwCtx.arc(r.x, r.y, 4, 0, Math.PI * 2);
+      fwCtx.fill();
+      fwCtx.restore();
+
+      const distToTarget = Math.sqrt(
+        Math.pow(r.x - r.targetX, 2) +
+        Math.pow(r.y - r.targetY, 2)
+      );
+      if (distToTarget < 15 || r.y < r.targetY) {
+        particles.splice(i, 1);
+        continue;
+      }
+      continue;
+    }
+
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += p.gravity;
+    p.vx *= 0.98;
+    p.vy *= 0.98;
+    p.life--;
+
+    if (p.life <= 0 || p.y > fwCanvas.height + 50) {
+      particles.splice(i, 1);
+      continue;
+    }
+
+    const alpha = p.life / p.maxLife;
+    fwCtx.globalAlpha = alpha;
+    fwCtx.fillStyle = p.color;
+
+    if (p.shape === 'rect') {
+      fwCtx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+    } else {
+      fwCtx.beginPath();
+      fwCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      fwCtx.fill();
+    }
+
+    fwCtx.globalAlpha = alpha * 0.3;
+    fwCtx.beginPath();
+    fwCtx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
+    fwCtx.fill();
+  }
+
+  fwCtx.globalAlpha = 1;
+
+  if (fireworksActive) {
+    fwAnimationId = requestAnimationFrame(drawFireworks);
+  }
+}
+
+function startFireworks(duration = 6000) {
+  if (!fwCtx) return;
+
+  fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+  particles = [];
+  fireworksActive = true;
+
+  const startTime = Date.now();
+
+  const interval = setInterval(() => {
+    if (Date.now() - startTime > duration) {
+      clearInterval(interval);
+      return;
+    }
+
+    launchFirework('left');
+    setTimeout(() => launchFirework('right'), 200);
+
+    if (Math.random() > 0.6) {
+      setTimeout(() => launchFirework(Math.random() > 0.5 ? 'left' : 'right'), 500);
+    }
+  }, 400);
+
+  if (!fwAnimationId) {
+    drawFireworks();
+  }
+}
+
+function stopFireworks() {
+  fireworksActive = false;
+  if (fwAnimationId) {
+    cancelAnimationFrame(fwAnimationId);
+    fwAnimationId = null;
+  }
+}
+
+// ===== ẢNH TRANG TRÍ MÀN HÌNH CHÚC MỪNG =====
+const DECOR_IMAGES = [
+  { src: 'img/linnea1.png', repeat: 1 },
+  { src: 'img/linnea2.png', repeat: 1 },
+  { src: 'img/linnea3.png', repeat: 1 },
+  { src: 'img/linnea4.png', repeat: 3 },
+  { src: 'img/linnea5.png', repeat: 1 },
+  { src: 'img/lumi1.png',   repeat: 1 },
+];
+
+const DECOR_POSITIONS = [
+  { top: 18, left: 4,  size: 70, delay: 0,   duration: 3 },
+  { top: 40, left: 6,  size: 55, delay: 0.8, duration: 3.2 },
+  { top: 62, left: 3,  size: 65, delay: 1.5, duration: 2.8 },
+  { top: 80, left: 10, size: 50, delay: 0.4, duration: 3.3 },
+  { top: 20, left: 92, size: 60, delay: 1.0, duration: 3.1 },
+  { top: 42, left: 90, size: 70, delay: 0.2, duration: 2.9 },
+  { top: 64, left: 93, size: 55, delay: 1.7, duration: 3.4 },
+  { top: 82, left: 88, size: 65, delay: 0.6, duration: 2.7 },
+  { top: 12, left: 20, size: 48, delay: 1.2, duration: 3 },
+  { top: 10, left: 78, size: 52, delay: 0.9, duration: 3.2 },
+  { top: 88, left: 25, size: 45, delay: 0.3, duration: 2.8 },
+  { top: 90, left: 70, size: 48, delay: 1.4, duration: 3.1 },
+];
+
+function spawnCongratsDecorations() {
+  const container = document.getElementById('congratsDecorations');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  const imagePool = [];
+  DECOR_IMAGES.forEach(item => {
+    for (let i = 0; i < item.repeat; i++) {
+      imagePool.push(item.src);
+    }
+  });
+
+  for (let i = imagePool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [imagePool[i], imagePool[j]] = [imagePool[j], imagePool[i]];
+  }
+
+  const isMobile = window.innerWidth < 768;
+  const positions = isMobile
+    ? DECOR_POSITIONS.filter((_, i) => i % 2 === 0)
+    : DECOR_POSITIONS;
+
+  const decorCount = Math.min(positions.length, imagePool.length);
+
+  for (let i = 0; i < decorCount; i++) {
+    const pos = positions[i];
+    const img = document.createElement('img');
+    img.className = 'congrats-decoration';
+    img.src = imagePool[i];
+    img.alt = '';
+
+    img.style.top = pos.top + '%';
+    img.style.left = pos.left + '%';
+
+    const size = isMobile ? pos.size * 0.75 : pos.size;
+    img.style.width = size + 'px';
+    img.style.minWidth = size * 0.8 + 'px';
+    img.style.height = 'auto';
+    img.style.animationDelay = pos.delay + 's';
+    img.style.animationDuration = pos.duration + 's';
+
+    container.appendChild(img);
+  }
+}
+
+// ===== NÚT TIẾP TỤC (CHÚC MỪNG → THIỆP) =====
+const nextBtn = document.getElementById('nextBtn');
+
+function nextClick() {
+  const congratsScreen = document.getElementById('congratsScreen');
+
+  congratsScreen.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  congratsScreen.style.opacity = '0';
+  congratsScreen.style.transform = 'scale(0.95)';
+
+  setTimeout(() => {
+    stopFireworks();
+    congratsScreen.style.display = 'none';
+    congratsScreen.style.transform = '';
+
+    const name = FIXED_NAME;
+    const letterTitle = document.getElementById('letterTitle');
+    if (letterTitle) letterTitle.textContent = 'Thân gửi ' + name;
+
+    letterScreen.classList.add('show');
+  }, 700);
+}
+
+if (nextBtn) {
+  nextBtn.addEventListener('click', nextClick);
+}
+
+// ===== MÀN HÌNH BÁNH KEM + WISH =====
+function resizeConfettiCanvas() {
+  if (!confettiCanvas) return;
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeConfettiCanvas);
+resizeConfettiCanvas();
+
+function createConfettiParticle(x, y, options = {}) {
+  const angle = options.angle ?? (Math.random() * Math.PI * 2);
+  const speed = options.speed ?? (5 + Math.random() * 8);
+  const colors = [
+    '#ffb6d5', '#ffd7a8', '#c9e8ff', '#ff8bbf', '#b89bff',
+    '#ff6fa8', '#ffe5b4', '#ffc9e0', '#7ec8ff', '#ffeb99'
+  ];
+
+  return {
+    x, y,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed - 3,
+    life: 120 + Math.random() * 60,
+    maxLife: 180,
+    color: options.color ?? colors[Math.floor(Math.random() * colors.length)],
+    size: options.size ?? (4 + Math.random() * 6),
+    rotation: Math.random() * Math.PI * 2,
+    rotationSpeed: (Math.random() - 0.5) * 0.3,
+    gravity: 0.15,
+    shape: Math.random() > 0.5 ? 'rect' : 'circle',
+    swing: Math.random() * 0.05,
+    swingPhase: Math.random() * Math.PI * 2
+  };
+}
+
+function launchConfetti() {
+  const cakeEl = document.querySelector('.cake-svg');
+  if (!cakeEl) return;
+
+  const rect = cakeEl.getBoundingClientRect();
+  const cakeCenterX = rect.left + rect.width / 2;
+  const cakeTopY = rect.top + rect.height * 0.3;
+
+  const totalParticles = 120;
+
+  for (let i = 0; i < totalParticles; i++) {
+    if (i % 2 === 0) {
+      confettiParticles.push(createConfettiParticle(
+        cakeCenterX - 60, cakeTopY,
+        {
+          angle: -Math.PI / 2 + (Math.random() - 0.5) * 1.2,
+          speed: 8 + Math.random() * 8
+        }
+      ));
+    } else {
+      confettiParticles.push(createConfettiParticle(
+        cakeCenterX + 60, cakeTopY,
+        {
+          angle: -Math.PI / 2 + (Math.random() - 0.5) * 1.2,
+          speed: 8 + Math.random() * 8
+        }
+      ));
+    }
+  }
+
+  setTimeout(() => {
+    for (let i = 0; i < 60; i++) {
+      confettiParticles.push(createConfettiParticle(
+        Math.random() * confettiCanvas.width,
+        -20,
+        {
+          angle: Math.PI / 2,
+          speed: 2 + Math.random() * 3
+        }
+      ));
+    }
+  }, 300);
+
+  setTimeout(() => {
+    for (let i = 0; i < 80; i++) {
+      confettiParticles.push(createConfettiParticle(
+        cakeCenterX + (Math.random() - 0.5) * 100,
+        cakeTopY,
+        {
+          angle: -Math.PI / 2 + (Math.random() - 0.5) * 1.5,
+          speed: 10 + Math.random() * 8
+        }
+      ));
+    }
+  }, 600);
+
+  if (!confettiActive) {
+    confettiActive = true;
+    drawConfetti();
+  }
+}
+
+function drawConfetti() {
+  if (!confettiCtx) return;
+
+  confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+  for (let i = confettiParticles.length - 1; i >= 0; i--) {
+    const p = confettiParticles[i];
+
+    p.vy += p.gravity;
+    p.vx *= 0.99;
+    p.vy *= 0.99;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.rotation += p.rotationSpeed;
+
+    p.x += Math.sin(p.swingPhase) * 0.5;
+    p.swingPhase += p.swing;
+
+    p.life--;
+
+    if (p.life <= 0 || p.y > confettiCanvas.height + 50) {
+      confettiParticles.splice(i, 1);
+      continue;
+    }
+
+    const alpha = Math.min(1, p.life / 60);
+    confettiCtx.save();
+    confettiCtx.globalAlpha = alpha;
+    confettiCtx.translate(p.x, p.y);
+    confettiCtx.rotate(p.rotation);
+    confettiCtx.fillStyle = p.color;
+
+    if (p.shape === 'rect') {
+      confettiCtx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+    } else {
+      confettiCtx.beginPath();
+      confettiCtx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+      confettiCtx.fill();
+    }
+
+    confettiCtx.restore();
+  }
+
+  if (confettiActive && confettiParticles.length > 0) {
+    confettiAnimationId = requestAnimationFrame(drawConfetti);
+  } else {
+    confettiActive = false;
+    confettiAnimationId = null;
+  }
+}
+
+function handleWish() {
+  if (wishDone) return;
+  wishDone = true;
+
+  wishBtn.disabled = true;
+  wishBtn.textContent = 'Đã ước rồi 💖';
+
+  launchConfetti();
+
+  setTimeout(() => {
+    wishMessage.classList.add('show');
+  }, 800);
+}
+
+// (Nút ước + thổi nến do finale.js xử lý)
+
+// ===== NÚT ĐÓNG THIỆP → CHUYỂN SANG BÁNH KEM =====
+const letterCloseBtn = document.getElementById('letterCloseBtn');
+
+function closeLetter() {
+  const letterScreenEl = document.getElementById('letterScreen');
+  letterScreenEl.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  letterScreenEl.style.opacity = '0';
+  letterScreenEl.style.transform = 'scale(0.95)';
+
+  setTimeout(() => {
+    letterScreenEl.style.display = 'none';
+
+    // Hiện màn hình bánh kem
+    if (cakeScreen) {
+      cakeScreen.classList.add('show');
+    }
+
+    // Reset nút ước (nếu chơi lại)
+    if (wishBtn) {
+      wishBtn.disabled = false;
+      wishBtn.textContent = 'Ước một điều ước 🎂';
+    }
+    wishDone = false;
+    confettiParticles = [];
+  }, 700);
+}
+
+if (letterCloseBtn) {
+  letterCloseBtn.addEventListener('click', closeLetter);
+}
+
+// ===== ALBUM ẢNH KỶ NIỆM =====
+// ⚠️ SỬA DANH SÁCH ẢNH + CAPTION Ở ĐÂY
+const ALBUM_PHOTOS = [
+  { src: 'img/firstmeet.jpg', caption: 'Lần đầu gặp' },
+  { src: 'img/30_4.jpg', caption: 'gêm gủng xuyên đêm 30/4, thức qua ngày mới đánh nhà hát tới sáng' },
+  { src: 'img/pink.jpg', caption: 'Hồng hồng chiều muộn hoàng hônnnn' },
+  { src: 'img/vozer.jpg', caption: '2016-2004=14 =))))))' },
+  { src: 'img/thamlam.jpg', caption: 'gì cũm lấy, c2 full char dự án ma' },
+  { src: 'img/bucanhmuanaocungspam.jpg', caption: 'Bức ảnh mùa nào cũng thấyyyy' },
+  { src: 'img/quansu.jpg', caption: 'sau khi ra khỏi quân sự' },
+  { src: 'img/leocay.jpg', caption: 'chị tôi thực sự leo chay lên cái cây 1 tỉ km' },
+  { src: 'img/doa.jpg', caption: '...' },
+  { src: 'img/laudai.jpg', caption: 'nhặt rương ở lâu đàiiii' },
+  { src: 'img/daosuongmu.jpg', caption: 'nhặt rương ở đảo sương mù' },
+  { src: 'img/chiem.jpg', caption: '=))))' },
+  // { src: 'img/anh3.jpg', caption: 'cảm ưn cậu gất nhiềuuuu' },
+  { src: 'img/anh1.jpg', caption: '2 cha con nè' },
+  { src: 'img/anh2.jpg', caption: '✨💫' },
+];
+
+const albumScreen = document.getElementById('albumScreen');
+const albumTrack = document.getElementById('albumTrack');
+const albumPrevBtn = document.getElementById('albumPrevBtn');
+const albumNextBtn = document.getElementById('albumNextBtn');
+const albumCounter = document.getElementById('albumCounter');
+const albumContinueBtn = document.getElementById('albumContinueBtn');
+
+let currentAlbumIndex = 0;   // vị trí mục tiêu (số nguyên, không giới hạn — dùng mod khi hiển thị)
+
+// ===== THÔNG SỐ HIỆU ỨNG (chỉnh tại đây) =====
+const ALBUM_ANGLE = 38;   // độ xoay 3D của ảnh bên cạnh (độ)
+const ALBUM_DEPTH = 140;  // ảnh bên cạnh lùi sâu bao nhiêu px
+
+const albumStage = albumTrack ? albumTrack.parentElement : null;
+const albumCards = [];    // { el, prev }
+
+// ===== HELPER: MODULO =====
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
+
+// ===== CO GIÃN KHUNG THEO TỈ LỆ ẢNH THẬT =====
+// Khung tối đa = --card-w x --card-h của stage (đã responsive sẵn trong CSS).
+// Ảnh ngang → khung rộng & thấp, ảnh dọc → khung cao & hẹp, ảnh vuông → ở giữa.
+const ALBUM_MIN_RATIO = 0.5;   // rộng/cao nhỏ nhất (ảnh dọc quá dài sẽ bị cắt nhẹ)
+const ALBUM_MAX_RATIO = 2.4;   // rộng/cao lớn nhất; ảnh vượt mức này được hiện NGUYÊN VẸN (letterbox) thay vì bị cắt
+
+function fitPolaroid(el, img) {
+  if (!albumStage || !img.naturalWidth) return;
+  const stageCS = getComputedStyle(albumStage);
+  const maxW = parseFloat(stageCS.getPropertyValue('--card-w')) || 320;
+  // chiều cao tối đa = min(--card-h, chiều cao stage thực tế) → không bao giờ tràn màn hình thấp
+  const maxH = Math.min(parseFloat(stageCS.getPropertyValue('--card-h')) || 380,
+                        albumStage.clientHeight - 8);
+
+  const cs = getComputedStyle(el);
+  const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+  const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+
+  const rawRatio = img.naturalWidth / img.naturalHeight;
+  const ratio = Math.max(ALBUM_MIN_RATIO, Math.min(ALBUM_MAX_RATIO, rawRatio));
+
+  // Ảnh quá dài/quá cao: giữ khung ở tỉ lệ giới hạn, nhưng hiện trọn ảnh (contain)
+  // trên nền là chính ảnh đó được làm mờ → không bị cắt mà vẫn đẹp.
+  const wrap = img.parentElement;
+  const extreme = rawRatio > ALBUM_MAX_RATIO || rawRatio < ALBUM_MIN_RATIO;
+  wrap.classList.toggle('letterbox', extreme);
+  if (extreme) wrap.style.setProperty('--bg', 'url("' + img.src + '")');
+
+  // vùng ảnh tối đa nằm trong khung tối đa
+  const boxW = maxW - padX;
+  const boxH = maxH - padY;
+  let w = boxW, h = w / ratio;
+  if (h > boxH) { h = boxH; w = h * ratio; }
+
+  el.style.setProperty('--pw', (w + padX) + 'px');
+  el.style.setProperty('--ph', (h + padY) + 'px');
+}
+
+function refitAllPolaroids() {
+  albumCards.forEach((c) => fitPolaroid(c.el, c.el.querySelector('.polaroid-img')));
+}
+window.addEventListener('resize', refitAllPolaroids);
+
+// ===== TẠO MỖI ẢNH = 1 THẺ RIÊNG (chỉ tạo 1 lần) =====
+function buildAlbum() {
+  if (!albumTrack) return;
+  albumTrack.innerHTML = '';
+  albumCards.length = 0;
+
+  ALBUM_PHOTOS.forEach((photo) => {
+    const el = document.createElement('div');
+    el.className = 'polaroid';
+    el.innerHTML =
+      '<div class="polaroid-img-wrap"><img class="polaroid-img" alt="" draggable="false" decoding="async"></div>' +
+      '<div class="polaroid-caption"></div>';
+    const imgEl = el.querySelector('.polaroid-img');
+    imgEl.addEventListener('load', () => fitPolaroid(el, imgEl));
+    imgEl.src = photo.src;
+    if (imgEl.complete && imgEl.naturalWidth) fitPolaroid(el, imgEl);
+    el.querySelector('.polaroid-caption').textContent = photo.caption || '';
+    albumTrack.appendChild(el);
+    albumCards.push({ el, prev: null });
+  });
+}
+
+// ===== ĐẶT VỊ TRÍ 3D CHO TẤT CẢ THẺ =====
+// center có thể là số thập phân (khi đang kéo chuột/vuốt)
+function layoutAlbum(center, instant) {
+  const total = albumCards.length;
+  if (total === 0) return;
+
+  const reset = [];
+
+  albumCards.forEach((c, i) => {
+    // khoảng cách vòng tròn từ ảnh này tới ảnh đang ở giữa: [-total/2, total/2)
+    const d = mod(i - center + total / 2, total) - total / 2;
+    const a = Math.abs(d);
+    const near = Math.min(a, 2);
+    const side = Math.max(-2, Math.min(2, d));
+
+    const tz = -near * ALBUM_DEPTH;
+    const ry = -side * ALBUM_ANGLE;
+    const scale = 1 - near * 0.06;
+
+    // mờ dần khi ra xa: giữa=1, cạnh≈0.8, xa nhất=0
+    const opacity = a <= 1 ? 1 - a * 0.2 : Math.max(0, 0.8 * (2 - a));
+    const dim = Math.min(a, 1) * 0.35;
+
+    // Ảnh "vòng" từ đầu này sang đầu kia → nhảy tức thì (đang trong suốt nên không thấy)
+    const teleport = c.prev !== null && Math.abs(d - c.prev) > 1.5;
+    if (instant || teleport) {
+      c.el.style.transition = 'none';
+      reset.push(c.el);
+    }
+
+    c.el.style.transform =
+      `translate3d(calc(var(--gap) * ${d}), 0, ${tz}px) rotateY(${ry}deg) scale(${scale})`;
+    c.el.style.opacity = opacity;
+    c.el.style.zIndex = 100 - Math.round(a * 10);
+    c.el.style.pointerEvents = a >= 1.5 ? 'none' : 'auto';
+    c.el.style.setProperty('--dim', dim);
+    c.prev = d;
+  });
+
+  if (reset.length) {
+    void albumTrack.offsetWidth;                     // ép trình duyệt áp dụng ngay
+    reset.forEach((el) => { el.style.transition = ''; });
+  }
+}
+
+function updateAlbumCounter() {
+  const total = ALBUM_PHOTOS.length;
+  if (albumCounter && total) {
+    albumCounter.textContent = `${mod(currentAlbumIndex, total) + 1} / ${total}`;
+  }
+}
+
+// ===== RENDER (gọi khi mở album) =====
+function renderAlbum() {
+  if (ALBUM_PHOTOS.length === 0) return;
+  if (albumCards.length !== ALBUM_PHOTOS.length) buildAlbum();
+  layoutAlbum(currentAlbumIndex, true);
+  updateAlbumCounter();
+}
+
+// ===== CHUYỂN ẢNH — KHÔNG KHÓA NÚT, BẤM LIÊN TIẾP VẪN MƯỢT =====
+function changePhoto(direction) {
+  if (ALBUM_PHOTOS.length <= 1 || !direction) return;
+  currentAlbumIndex += direction;
+  layoutAlbum(currentAlbumIndex);
+  updateAlbumCounter();
+}
+
+// ===== GẮN SỰ KIỆN NÚT =====
+if (albumNextBtn) albumNextBtn.addEventListener('click', () => changePhoto(1));
+if (albumPrevBtn) albumPrevBtn.addEventListener('click', () => changePhoto(-1));
+
+// Phím tắt
+document.addEventListener('keydown', (e) => {
+  if (!albumScreen || !albumScreen.classList.contains('show')) return;
+  if (e.key === 'ArrowRight') changePhoto(1);
+  if (e.key === 'ArrowLeft') changePhoto(-1);
+});
+
+// ===== KÉO / VUỐT ĐỂ ĐỔI ẢNH + BẤM VÀO ẢNH BÊN CẠNH =====
+let albumDrag = null;
+
+function albumGapPx() {
+  return parseFloat(getComputedStyle(albumStage).getPropertyValue('--gap')) || 200;
+}
+
+if (albumStage) {
+  albumStage.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('button')) return;
+    albumDrag = { x: e.clientX, t: performance.now(), moved: false, id: e.pointerId };
+  });
+
+  albumStage.addEventListener('pointermove', (e) => {
+    if (!albumDrag) return;
+    const dx = e.clientX - albumDrag.x;
+    if (!albumDrag.moved && Math.abs(dx) > 6) {
+      albumDrag.moved = true;
+      albumStage.classList.add('dragging');
+      try { albumStage.setPointerCapture(albumDrag.id); } catch (_) {}
+    }
+    if (albumDrag.moved) {
+      const frac = Math.max(-1, Math.min(1, dx / albumGapPx()));
+      layoutAlbum(currentAlbumIndex - frac);   // ảnh bám theo ngón tay
+    }
+  });
+
+  const endDrag = (e) => {
+    if (!albumDrag) return;
+    const dx = e.clientX - albumDrag.x;
+    const v = dx / Math.max(1, performance.now() - albumDrag.t);   // px/ms
+    const moved = albumDrag.moved;
+    albumDrag = null;
+    albumStage.classList.remove('dragging');
+
+    if (moved) {
+      const threshold = albumGapPx() * 0.25;
+      if (dx < -threshold || v < -0.5) changePhoto(1);
+      else if (dx > threshold || v > 0.5) changePhoto(-1);
+      else layoutAlbum(currentAlbumIndex);   // chưa đủ lực → trả về chỗ cũ
+    } else {
+      // Bấm vào ảnh bên cạnh → chuyển tới ảnh đó
+      const cardEl = e.target.closest ? e.target.closest('.polaroid') : null;
+      const idx = albumCards.findIndex((c) => c.el === cardEl);
+      if (idx >= 0) {
+        const total = albumCards.length;
+        const delta = mod(idx - currentAlbumIndex + total / 2, total) - total / 2;
+        changePhoto(Math.round(delta));
+      }
+    }
+  };
+  albumStage.addEventListener('pointerup', endDrag);
+  albumStage.addEventListener('pointercancel', endDrag);
+}
+
+// ===== CHUYỂN TỪ BÁNH KEM SANG ALBUM =====
+function goToAlbum() {
+  if (!cakeScreen || !albumScreen) return;
+
+  cakeScreen.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  cakeScreen.style.opacity = '0';
+  cakeScreen.style.transform = 'scale(0.95)';
+
+  setTimeout(() => {
+    cakeScreen.style.display = 'none';
+    cakeScreen.style.transform = '';
+
+    // Reset album về ảnh đầu
+    currentAlbumIndex = 0;
+    renderAlbum();
+
+    // Hiện album
+    albumScreen.classList.add('show');
+  }, 700);
+}
+
+// Nút "Tiếp tục" trong album
+if (albumContinueBtn) {
+  albumContinueBtn.addEventListener('click', () => {
+    if (window.startSkyFinale) window.startSkyFinale();
+  });
+}
+
+// (Thổi nến & bầu trời sao: xem finale.js)
