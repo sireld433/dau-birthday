@@ -114,9 +114,7 @@ async function startBirthday() {
     if (!res.ok || !data.ok) {
       showPasswordError(res.status === 429
         ? 'Thử quá nhiều lần, đợi chút nhé ⏳'
-        : res.status >= 500
-          ? 'Server đang lỗi (mã ' + res.status + ') 😢'
-          : 'Sai mật khẩu rồi, thử lại nhé 🥺');
+        : 'Sai mật khẩu rồi, thử lại nhé 🥺');
       return;
     }
   } catch (err) {
@@ -215,7 +213,7 @@ function continueClick() {
     mainScreen.style.display = 'none';
 
     const congratsName = document.getElementById('congratsName');
-    if (congratsName) congratsName.textContent = 'Gửi ' + name + ' 💖';
+    if (congratsName) congratsName.textContent = 'Gửi ' + name + ' 🍓';
 
     spawnCongratsDecorations();
 
@@ -761,21 +759,21 @@ if (letterCloseBtn) {
 // ===== ALBUM ẢNH KỶ NIỆM =====
 // ⚠️ SỬA DANH SÁCH ẢNH + CAPTION Ở ĐÂY
 const ALBUM_PHOTOS = [
-  { src: 'img/firstmeet.jpg', caption: 'Lần đầu gặp' },
+  { src: 'img/firstmeet.jpg', caption: 'Lần đầu gặp gỡ của chún ta ✨' },
   { src: 'img/30_4.jpg', caption: 'gêm gủng xuyên đêm 30/4, thức qua ngày mới đánh nhà hát tới sáng' },
-  { src: 'img/pink.jpg', caption: 'Hồng hồng chiều muộn hoàng hônnnn' },
-  { src: 'img/vozer.jpg', caption: '2016-2004=14 =))))))' },
-  { src: 'img/thamlam.jpg', caption: 'gì cũm lấy, c2 full char dự án ma' },
+  { src: 'img/pink.jpg', caption: 'Hồng hồng chiều muộn hoàng hônnnn 🌇' },
+  { src: 'img/vozer.jpg', caption: 'chị tui 2016 - 2004 = 14 =))))))' },
+  { src: 'img/thamlam.jpg', caption: 'còn dự án ma mấy char c2 nữa 👻' },
   { src: 'img/bucanhmuanaocungspam.jpg', caption: 'Bức ảnh mùa nào cũng thấyyyy' },
-  { src: 'img/quansu.jpg', caption: 'sau khi ra khỏi quân sự' },
-  { src: 'img/leocay.jpg', caption: 'chị tôi thực sự leo chay lên cái cây 1 tỉ km' },
+  { src: 'img/quansu.jpg', caption: 'sau khi ra khỏi khu quân sự' },
+  { src: 'img/leocay.jpg', caption: 'chị tui thực sự leo chay lên cái cây 1 tỉ km =)))))' },
   { src: 'img/doa.jpg', caption: '...' },
-  { src: 'img/laudai.jpg', caption: 'nhặt rương ở lâu đàiiii' },
-  { src: 'img/daosuongmu.jpg', caption: 'nhặt rương ở đảo sương mù' },
+  { src: 'img/laudai.jpg', caption: 'nhặt rương ở lâu đàiiii 🏰' },
+  { src: 'img/daosuongmu.jpg', caption: 'nhặt rương ở đảo sương mùuuu 🌫️🌫️' },
   { src: 'img/chiem.jpg', caption: '=))))' },
-  // { src: 'img/anh3.jpg', caption: 'cảm ưn cậu gất nhiềuuuu' },
+  { src: 'img/anh3.jpg', caption: 'cảm ưn cậu gất nhiềuuuu 🫰' },
   { src: 'img/anh1.jpg', caption: '2 cha con nè' },
-  { src: 'img/anh2.jpg', caption: '✨💫' },
+  { src: 'img/anh2.jpg', caption: 'cảm ơn cậu đã xem tới đâyyyyy ✨💫' },
 ];
 
 const albumScreen = document.getElementById('albumScreen');

@@ -4,17 +4,17 @@ const SKY_BIRTH = { day: 25, month: 10};
 const SKY_SIGN = '';
 
 const SKY_WISHES = [
-  { c: 'g', t: 'Cảm ơn cậu vì đã luôn lắng nghe và giúp đỡ mình' },
-  { c: 'g', t: 'Cảm ơn vì đã đồng hành với mình' },
-  { c: 'g', t: 'Cảm ơn cậu vì đã luôn là chính cậu' },
+  { c: 'g', t: 'Cảm ơn cậu vì đã luôn lắng nghe và giúp đỡ tớ' },
+  { c: 'g', t: 'Cảm ơn vì đã đồng hành với tớ' },
+  { c: 'g', t: 'Mong rằng cậu luôn giữ được sự thân thiện và cute này' },
   { c: 'm', t: 'Lần đầu gặp nhau*' },
-  { c: 'm', t: 'Câu đùa của hai người*' },
+  { c: 'm', t: '"Chị" tao là cung bọ cạp ♏' },
   { c: 'm', t: 'Khoảnh khắc đáng nhớ*' },
-  { c: 'f', t: 'Mong cậu luôn được làm những điều cậu thích, theo đuổi những gì cậu mong muốn' },
-  { c: 'f', t: 'Mong năm nay sẽ dịu dàng với cậu hơn' },
+  { c: 'f', t: 'Mong tuổi mới của cậu sẽ là một tuổi mới tràn đầy năng lượng và niềm vui!' },
+  { c: 'f', t: 'Mong tuổi mới của cậu sẽ tràn đầy năng lượng và niềm vui!' },
 ]
 const SKY_SPECIAL = 'Dù sao đi nữa tớ vẫn luôn ủng hộ cậu!';
-const SKY_CLOSING = 'Mong mọi điều tốt đẹp nhất sẽ đến với cậu trong năm tới! 🎉';
+const SKY_CLOSING = 'Mong mọi điều tốt đẹp nhất sẽ đến với cậu trong tuổi mới! 🎉';
 
 /* ============================ THỔI NẾN ============================ */
 (function () {
