@@ -1,6 +1,5 @@
-// ⚠️ NGÀY SINH NGƯỜI ĐƯỢC CHÚC → tự chọn chòm sao theo cung hoàng đạo
 const SKY_BIRTH = { day: 25, month: 10};
-// 'libra','scorpio','sagittarius','capricorn','aquarius','pisces'. Để '' = tự đoán theo ngày sinh.
+
 const SKY_SIGN = '';
 
 const SKY_WISHES = [
@@ -16,7 +15,6 @@ const SKY_WISHES = [
 const SKY_SPECIAL = 'Tớ sẽ luôn ủng hộ cậu hết mình !!!';
 const SKY_CLOSING = 'Mong mọi điều tốt đẹp nhất sẽ đến với cậu trong tuổi mới! 🎉';
 
-/* ============================ THỔI NẾN ============================ */
 (function () {
   const $ = (id) => document.getElementById(id);
   const wishButton = $('wishBtn'), hint = $('blowHint'), meter = $('blowMeter'), fill = $('blowMeterFill');
@@ -26,7 +24,6 @@ const SKY_CLOSING = 'Mong mọi điều tốt đẹp nhất sẽ đến với c�
   const flames = [...document.querySelectorAll('.flame')];
   const CANDLE = [[119, 58], [139, 53], [159, 51], [179, 58]];
 
-  // ⚙️ CHỈNH ĐỘ NHẠY Ở ĐÂY
   const NEED = 0.3;          // số giây thổi liên tục để tắt 1 nến (nhỏ hơn = dễ hơn)
   const MARGIN_START = 5;    // dB: tiếng phải lớn hơn tiếng ồn nền bấy nhiêu mới tính là thổi
   const MARGIN_MIN = 2.5;    // dB: độ nhạy tự tăng dần về mức này nếu thổi mãi chưa tắt
@@ -156,9 +153,7 @@ const SKY_CLOSING = 'Mong mọi điều tốt đẹp nhất sẽ đến với c�
   window.addEventListener('pointercancel', up);
 })();
 
-/* ================= BẦU TRỜI SAO: CHÒM SAO THEO CUNG HOÀNG ĐẠO ================= */
 (function () {
-  // Toạ độ [x, y, loại]: loại 0 = sao nhỏ (tự sáng theo), 1 = sao chạm được (mặc định), 2 = sao đặc biệt
   const ZODIAC = {
     scorpio: { name: 'Scorpio', stars: [   // dựng lại theo ảnh mẫu
       [310,57,0],[338,69,1],[345,99,0],[347,138,0],[347,170,1],[293,125,0],[273,134,2],[255,152,0],

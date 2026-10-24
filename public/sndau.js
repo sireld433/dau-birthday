@@ -1,4 +1,4 @@
-// ===== DANH SÁCH ẢNH CHIIKAWA =====
+
 const chiiImages = [
   'img/chiikawa1.png',
   'img/chiikawa2.png',
@@ -8,7 +8,6 @@ const chiiImages = [
   'img/momonga3.png'
 ];
 
-// ===== LẤY PHẦN TỬ DOM =====
 const nameModal    = document.getElementById('nameModal');
 const passwordInput = document.getElementById('passwordInput');
 const FIXED_NAME   = 'Dâu';
@@ -21,7 +20,6 @@ const bgMusic      = document.getElementById('bgMusic');
 const continueBtn  = document.getElementById('continueBtn');
 const letterScreen = document.getElementById('letterScreen');
 
-// ===== BIẾN DÙNG CHUNG (khai báo sớm để tránh lỗi) =====
 const cakeScreen       = document.getElementById('cakeScreen');
 const wishBtn          = document.getElementById('wishBtn');
 const wishMessage      = document.getElementById('wishMessage');
@@ -33,9 +31,8 @@ let confettiActive      = false;
 let confettiAnimationId = null;
 let wishDone            = false;
 
-// ===== VỊ TRÍ ẢNH BAY XUNG QUANH MÀN HÌNH CHÍNH =====
 const FIXED_POSITIONS = [
-  // === HÀNG TRÊN ===
+
   { src: 'img/chiikawa1.png', top: 5,  left: 8,  size: 55, delay: 0,   duration: 3 },
   { src: 'img/momonga2.png',  top: 3,  left: 22, size: 45, delay: 0.8, duration: 2.8 },
   { src: 'img/chiikawa2.png', top: 20, left: 30, size: 50, delay: 1.5, duration: 3.2 },
@@ -43,13 +40,13 @@ const FIXED_POSITIONS = [
   { src: 'img/chiikawa3.png', top: 7,  left: 78, size: 52, delay: 1.2, duration: 3.4 },
   { src: 'img/momonga3.png',  top: 5,  left: 92, size: 45, delay: 1.8, duration: 2.9 },
 
-  // === HÀNG GIỮA (hai bên) ===
+
   { src: 'img/chiikawa5.png', top: 40, left: 3,  size: 50, delay: 0.6, duration: 3.1 },
   { src: 'img/momonga2.png',  top: 55, left: 15, size: 45, delay: 1.4, duration: 2.7 },
   { src: 'img/chiikawa1.png', top: 38, left: 90, size: 48, delay: 0.2, duration: 3.3 },
   { src: 'img/momonga1.png',  top: 58, left: 90, size: 50, delay: 1.0, duration: 2.8 },
 
-  // === HÀNG DƯỚI ===
+
   { src: 'img/chiikawa2.png', top: 78, left: 12, size: 52, delay: 0.9, duration: 3.0 },
   { src: 'img/momonga2.png',  top: 82, left: 30, size: 45, delay: 1.6, duration: 2.5 },
   { src: 'img/chiikawa3.png', top: 70, left: 75, size: 48, delay: 0.3, duration: 3.2 },
@@ -57,7 +54,6 @@ const FIXED_POSITIONS = [
   { src: 'img/chiikawa5.png', top: 88, left: 60, size: 42, delay: 0.7, duration: 3.1 },
 ];
 
-// ===== TẠO ẢNH BAY XUNG QUANH MÀN HÌNH CHÍNH =====
 function spawnFloatingChii() {
   const isMobile = window.innerWidth < 600;
   const FIXED_SIZE = 75;
@@ -83,7 +79,6 @@ function spawnFloatingChii() {
   });
 }
 
-// ===== BẮT ĐẦU (kiểm tra mật khẩu qua server) =====
 let isChecking = false;
 
 function showPasswordError(msg) {
@@ -138,7 +133,6 @@ async function startBirthday() {
   tryPlayMusic();
 }
 
-// ===== NHẠC =====
 const playlist = [
   'music/CarelessWhisper.mp3',
   'music/CarelessWhisper.mp3',
@@ -202,7 +196,6 @@ function toggleMusic() {
   }
 }
 
-// ===== NÚT TIẾP TỤC (MÀN HÌNH CHÍNH → CHÚC MỪNG) =====
 function continueClick() {
   const name = FIXED_NAME;
 
@@ -227,7 +220,6 @@ function continueClick() {
   }, 700);
 }
 
-// ===== GẮN SỰ KIỆN CHÍNH =====
 startBtn.addEventListener('click', startBirthday);
 
 passwordInput.addEventListener('keydown', (e) => {
@@ -238,7 +230,6 @@ musicBtn.addEventListener('click', toggleMusic);
 
 continueBtn.addEventListener('click', continueClick);
 
-// ===== HIỆU ỨNG PHÁO HOA =====
 const fwCanvas = document.getElementById('fireworksCanvas');
 const fwCtx = fwCanvas ? fwCanvas.getContext('2d') : null;
 
@@ -464,7 +455,6 @@ function stopFireworks() {
   }
 }
 
-// ===== ẢNH TRANG TRÍ MÀN HÌNH CHÚC MỪNG =====
 const DECOR_IMAGES = [
   { src: 'img/linnea1.png', repeat: 1 },
   { src: 'img/linnea2.png', repeat: 1 },
@@ -535,7 +525,6 @@ function spawnCongratsDecorations() {
   }
 }
 
-// ===== NÚT TIẾP TỤC (CHÚC MỪNG → THIỆP) =====
 const nextBtn = document.getElementById('nextBtn');
 
 function nextClick() {
@@ -815,9 +804,6 @@ function handleWish() {
   }, 800);
 }
 
-// (Nút ước + thổi nến do finale.js xử lý)
-
-// ===== NÚT ĐÓNG THIỆP → CHUYỂN SANG BÁNH KEM =====
 const letterCloseBtn = document.getElementById('letterCloseBtn');
 
 function closeLetter() {
@@ -871,23 +857,18 @@ const albumNextBtn = document.getElementById('albumNextBtn');
 const albumCounter = document.getElementById('albumCounter');
 const albumContinueBtn = document.getElementById('albumContinueBtn');
 
-let currentAlbumIndex = 0;   // vị trí mục tiêu (số nguyên, không giới hạn — dùng mod khi hiển thị)
+let currentAlbumIndex = 0; 
 
-// ===== THÔNG SỐ HIỆU ỨNG (chỉnh tại đây) =====
 const ALBUM_ANGLE = 38;   // độ xoay 3D của ảnh bên cạnh (độ)
 const ALBUM_DEPTH = 140;  // ảnh bên cạnh lùi sâu bao nhiêu px
 
 const albumStage = albumTrack ? albumTrack.parentElement : null;
 const albumCards = [];    // { el, prev }
 
-// ===== HELPER: MODULO =====
 function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-// ===== CO GIÃN KHUNG THEO TỈ LỆ ẢNH THẬT =====
-// Khung tối đa = --card-w x --card-h của stage (đã responsive sẵn trong CSS).
-// Ảnh ngang → khung rộng & thấp, ảnh dọc → khung cao & hẹp, ảnh vuông → ở giữa.
 const ALBUM_MIN_RATIO = 0.5;   // rộng/cao nhỏ nhất (ảnh dọc quá dài sẽ bị cắt nhẹ)
 const ALBUM_MAX_RATIO = 2.4;   // rộng/cao lớn nhất; ảnh vượt mức này được hiện NGUYÊN VẸN (letterbox) thay vì bị cắt
 
@@ -895,7 +876,7 @@ function fitPolaroid(el, img) {
   if (!albumStage || !img.naturalWidth) return;
   const stageCS = getComputedStyle(albumStage);
   const maxW = parseFloat(stageCS.getPropertyValue('--card-w')) || 320;
-  // chiều cao tối đa = min(--card-h, chiều cao stage thực tế) → không bao giờ tràn màn hình thấp
+
   const maxH = Math.min(parseFloat(stageCS.getPropertyValue('--card-h')) || 380,
                         albumStage.clientHeight - 8);
 
@@ -906,8 +887,6 @@ function fitPolaroid(el, img) {
   const rawRatio = img.naturalWidth / img.naturalHeight;
   const ratio = Math.max(ALBUM_MIN_RATIO, Math.min(ALBUM_MAX_RATIO, rawRatio));
 
-  // Ảnh quá dài/quá cao: giữ khung ở tỉ lệ giới hạn, nhưng hiện trọn ảnh (contain)
-  // trên nền là chính ảnh đó được làm mờ → không bị cắt mà vẫn đẹp.
   const wrap = img.parentElement;
   const extreme = rawRatio > ALBUM_MAX_RATIO || rawRatio < ALBUM_MIN_RATIO;
   wrap.classList.toggle('letterbox', extreme);
@@ -928,7 +907,6 @@ function refitAllPolaroids() {
 }
 window.addEventListener('resize', refitAllPolaroids);
 
-// ===== TẠO MỖI ẢNH = 1 THẺ RIÊNG (chỉ tạo 1 lần) =====
 function buildAlbum() {
   if (!albumTrack) return;
   albumTrack.innerHTML = '';
@@ -950,8 +928,6 @@ function buildAlbum() {
   });
 }
 
-// ===== ĐẶT VỊ TRÍ 3D CHO TẤT CẢ THẺ =====
-// center có thể là số thập phân (khi đang kéo chuột/vuốt)
 function layoutAlbum(center, instant) {
   const total = albumCards.length;
   if (total === 0) return;
@@ -1084,7 +1060,6 @@ if (albumStage) {
   albumStage.addEventListener('pointercancel', endDrag);
 }
 
-// ===== CHUYỂN TỪ BÁNH KEM SANG ALBUM =====
 function goToAlbum() {
   if (!cakeScreen || !albumScreen) return;
 
@@ -1100,16 +1075,12 @@ function goToAlbum() {
     currentAlbumIndex = 0;
     renderAlbum();
 
-    // Hiện album
     albumScreen.classList.add('show');
   }, 700);
 }
 
-// Nút "Tiếp tục" trong album
 if (albumContinueBtn) {
   albumContinueBtn.addEventListener('click', () => {
     if (window.startSkyFinale) window.startSkyFinale();
   });
 }
-
-// (Thổi nến & bầu trời sao: xem finale.js)

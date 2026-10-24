@@ -37,7 +37,6 @@
   </div>
   <div class="subtitle">~ Chúc mừng sinh nhật ~</div>
 
-  <!-- Thiệp -->
   <div class="card">
     <p>🎂 Hôm nay là ngày đặc biệt của <b id="cardName">bạn</b>!</p>
     <p class="small">Tớ có chuẩn bị một thiệp dành riêng cho cậu...</p>
@@ -49,12 +48,9 @@
   <div class="footer">Made with &gt;_433</div>
 </div>
 
-<!-- ===== MÀN HÌNH CHÚC MỪNG ===== -->
 <div class="congrats-screen" id="congratsScreen">
 
-  <!-- Dây treo Happy Birthday -->
   <div class="bunting" id="bunting">
-    <!-- SVG dây cung -->
     <svg class="bunting-rope" viewBox="0 0 1200 200" preserveAspectRatio="none">
       <path d="M 0 20 Q 300 100, 600 60 T 1200 20" 
             fill="none" stroke="#ffb6d5" stroke-width="3"/>
@@ -62,7 +58,6 @@
             fill="none" stroke="#ffd7a8" stroke-width="3"/>
     </svg>
 
-    <!-- Các lá cờ tam giác -->
     <div class="bunting-flags">
       <div class="flag" style="--color: #ffb6d5; --delay: 0s;">H</div>
       <div class="flag" style="--color: #ffd7a8; --delay: 0.2s;">A</div>
@@ -81,10 +76,8 @@
     </div>
   </div>
 
-  <!-- Ảnh Chiikawa trang trí (JS sẽ tạo) -->
   <div class="congrats-decorations" id="congratsDecorations"></div>
 
-  <!-- Nội dung chính -->
   <div class="congrats-content">
     <div class="avatar-wrap">
       <img src="img/dau.jpeg" alt="Avatar" class="congrats-avatar" id="congratsAvatar">
@@ -95,7 +88,6 @@
 
   <button class="btn-continue btn-next" id="nextBtn">Tiếp tục →</button>
 
-  <!-- Canvas pháo hoa -->
   <canvas id="fireworksCanvas"></canvas>
 </div>
 
@@ -188,7 +180,6 @@
         <ellipse cx="179" cy="58" rx="2" ry="5" fill="#ff6fa8"/>
       </g>
 
-      <!-- Định nghĩa gradient bóng -->
       <defs>
         <linearGradient id="tier1Shade" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="rgba(255,255,255,0.3)"/>
@@ -206,30 +197,23 @@
     </svg>
   </div>
 
-  <!-- Nút "Ước một điều" -->
   <button class="btn-wish" id="wishBtn">Ước một điều ước 🎂</button>
 
-  <!-- Gợi ý + thanh đo hơi thổi -->
   <p class="blow-hint" id="blowHint"></p>
   <div class="blow-meter" id="blowMeter"><i id="blowMeterFill"></i></div>
 
-  <!-- Dòng chữ hiện sau khi bấm -->
   <p class="wish-message" id="wishMessage">Mong rằng điều ước của cậu sẽ thành hiện thực✨</p>
 
-  <!-- Canvas confetti (bắn từ bánh) -->
   <canvas id="confettiCanvas"></canvas>
 </div>
 
-<!-- ===== MÀN HÌNH ALBUM ẢNH KỶ NIỆM ===== -->
 <div class="album-screen" id="albumScreen">
 
-  <!-- Tiêu đề -->
   <h2 class="album-title">Kỷ niệm của chúng ta</h2>
 
-  <!-- Stage chứa track -->
   <div class="album-stage">
     <div class="album-track" id="albumTrack">
-      <!-- 5 polaroid: 2 ẩn 2 bên + 3 hiện -->
+
       <div class="polaroid" data-pos="-2">
         <div class="polaroid-img-wrap"><img src="" alt="" class="polaroid-img"></div>
         <p class="polaroid-caption"></p>
@@ -253,20 +237,17 @@
     </div>
   </div>
 
-  <!-- Điều hướng -->
   <div class="album-nav">
     <button class="album-btn" id="albumPrevBtn" aria-label="Ảnh trước">‹</button>
     <span class="album-counter" id="albumCounter">1 / 1</span>
     <button class="album-btn" id="albumNextBtn" aria-label="Ảnh sau">›</button>
   </div>
 
-  <!-- Nút tiếp tục -->
   <button class="btn-continue btn-album-next" id="albumContinueBtn">Tiếp tục →</button>
 </div>
 
 </div>
 
-<!-- ===== MÀN HÌNH KẾT: BẦU TRỜI SAO ===== -->
 <div class="sky-screen" id="skyScreen">
   <canvas id="skyCanvas"></canvas>
   <div class="sky-moon"></div>
