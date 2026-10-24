@@ -5,15 +5,15 @@ const SKY_SIGN = '';
 
 const SKY_WISHES = [
   { c: 'g', t: 'Cảm ơn cậu vì đã luôn lắng nghe và giúp đỡ tớ' },
-  { c: 'g', t: 'Cảm ơn vì đã đồng hành với tớ' },
+  { c: 'g', t: 'Cảm ơn đã đồng hành với tớ' },
   { c: 'g', t: 'Mong rằng cậu luôn giữ được sự thân thiện và cute này' },
-  { c: 'm', t: 'Lần đầu gặp nhau*' },
-  { c: 'm', t: '"Chị" tao là cung bọ cạp ♏' },
-  { c: 'm', t: 'Khoảnh khắc đáng nhớ*' },
-  { c: 'f', t: 'Mong tuổi mới của cậu sẽ là một tuổi mới tràn đầy năng lượng và niềm vui!' },
-  { c: 'f', t: 'Mong tuổi mới của cậu sẽ tràn đầy năng lượng và niềm vui!' },
+  { c: 'm', t: 'blink blink 🎉🎂' },
+  { c: 'm', t: 'Tao là cung bọ cạp ♏' },
+  { c: 'm', t: 'Mong rằng cậu sẽ gặp được nhiều điều tuyệt vời trong năm tớiii' },
+  { c: 'f', t: 'Chúc cho cậu sẽ luôn tràn đầy năng lượng và niềm vui!' },
+  { c: 'f', t: 'Mong cậu có thể làm được những điều mình thích, theo đuổi những gì mình mong muốn.' },
 ]
-const SKY_SPECIAL = 'Dù sao đi nữa tớ vẫn luôn ủng hộ cậu!';
+const SKY_SPECIAL = 'Tớ sẽ luôn ủng hộ cậu hết mình !!!';
 const SKY_CLOSING = 'Mong mọi điều tốt đẹp nhất sẽ đến với cậu trong tuổi mới! 🎉';
 
 /* ============================ THỔI NẾN ============================ */
@@ -56,7 +56,7 @@ const SKY_CLOSING = 'Mong mọi điều tốt đẹp nhất sẽ đến với c�
     if (mode !== 'idle') return;
     mode = 'ready';
     wishButton.disabled = true;
-    wishButton.textContent = 'Đang chờ cậu thổi nến… 🕯️';
+    wishButton.textContent = 'Đang chờ thổi nến… 🕯️';
     setHint('Cho mình mượn micro một chút nha 🎤');
 
     let micOk = true;
@@ -68,7 +68,7 @@ const SKY_CLOSING = 'Mong mọi điều tốt đẹp nhất sẽ đến với c�
       setHint('Nhắm mắt lại, ước một điều… 💭');
       setTimeout(() => { if (mode === 'ready') setHint('Giờ thì thổi nến nào! 🕯️💨<small>thổi gần micro, một hơi đều là được</small>'); }, 1100);
     } else {
-      setHint('Không dùng được micro, nhưng không sao 🥹' + FALLBACK.replace('hoặc giữ', 'hãy giữ'));
+      setHint('Nhấn giữ để thổi nến nhaaa' + FALLBACK.replace('hoặc giữ', 'hãy giữ'));
     }
     last = performance.now();
     requestAnimationFrame(loop);

@@ -555,7 +555,99 @@ function nextClick() {
     if (letterTitle) letterTitle.textContent = 'Thân gửi ' + name;
 
     letterScreen.classList.add('show');
+    startLetterTyping();
   }, 700);
+}
+
+const LETTER_TYPE_SPEED = 14;     
+const LETTER_PARAGRAPH_PAUSE = 200; // nghỉ một nhịp khi hết đoạn
+let letterTypingTimer = null;
+
+function startLetterTyping() {
+  const body = document.getElementById('letterBody');
+  const sig = document.querySelector('.letter-signature');
+  const closeBtn = document.getElementById('letterCloseBtn');
+  const card = document.querySelector('.letter-card');
+  if (!body) return;
+
+  if (letterTypingTimer) { clearTimeout(letterTypingTimer); letterTypingTimer = null; }
+
+  // Lấy nội dung gốc từng đoạn (chỉ lấy 1 lần)
+  if (!body._paras) {
+    body._paras = Array.from(body.querySelectorAll('p'))
+      .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+      .filter(Boolean);
+  }
+  const texts = body._paras;
+
+  // Dựng lại: mỗi đoạn gồm phần đã gõ + phần chưa gõ (ẩn nhưng vẫn giữ chỗ)
+  body.innerHTML = '';
+  const parts = texts.map(() => {
+    const p = document.createElement('p');
+    const done = document.createElement('span');
+    const rest = document.createElement('span');
+    rest.className = 't-rest';
+    p.append(done, rest);
+    body.appendChild(p);
+    return { done, rest };
+  });
+
+  let para = 0, idx = 0, finished = false;
+
+  // Nếu người xem tự kéo thư thì không tự cuộn theo chữ nữa
+  let userScrolled = false;
+  const stopFollow = () => { userScrolled = true; };
+  body.addEventListener('wheel', stopFollow, { passive: true });
+  body.addEventListener('touchstart', stopFollow, { passive: true });
+  body.addEventListener('pointerdown', stopFollow);
+
+  // Thư dài hơn khung thì tự cuộn theo đoạn đang gõ
+  function followTyping() {
+    if (userScrolled || body.scrollHeight <= body.clientHeight) return;
+    const rects = parts[para].done.getClientRects();
+    if (!rects.length) return;
+    const bottom = rects[rects.length - 1].bottom - body.getBoundingClientRect().top + body.scrollTop;
+    const margin = 40;
+    if (bottom > body.scrollTop + body.clientHeight - margin) {
+      body.scrollTop = bottom - body.clientHeight + margin;
+    }
+  }
+
+  function render() {
+    parts[para].done.textContent = texts[para].slice(0, idx);
+    parts[para].rest.textContent = texts[para].slice(idx);
+    followTyping();
+  }
+  texts.forEach((t, k) => { parts[k].rest.textContent = t; });
+
+  function finish() {
+    if (finished) return;
+    finished = true;
+    if (letterTypingTimer) { clearTimeout(letterTypingTimer); letterTypingTimer = null; }
+    texts.forEach((t, k) => { parts[k].done.textContent = t; parts[k].rest.textContent = ''; });
+    if (sig) sig.classList.add('show');
+    if (closeBtn) closeBtn.classList.add('show');
+    if (card) card.removeEventListener('click', finish);
+  }
+
+  function tick() {
+    if (finished) return;
+    idx++;
+    render();
+    let delay = LETTER_TYPE_SPEED;
+    if (idx >= texts[para].length) {
+      para++; idx = 0;
+      if (para >= texts.length) { finish(); return; }
+      delay += LETTER_PARAGRAPH_PAUSE;
+    }
+    letterTypingTimer = setTimeout(tick, delay);
+  }
+
+  // Chạm vào thiệp để hiện hết ngay
+  if (card) card.addEventListener('click', finish);
+
+  // Đợi thiệp mở xong (animation ~1.3s) rồi mới bắt đầu gõ
+  letterTypingTimer = setTimeout(tick, 1300);
 }
 
 if (nextBtn) {
@@ -756,21 +848,17 @@ if (letterCloseBtn) {
   letterCloseBtn.addEventListener('click', closeLetter);
 }
 
-// ===== ALBUM ẢNH KỶ NIỆM =====
-// ⚠️ SỬA DANH SÁCH ẢNH + CAPTION Ở ĐÂY
 const ALBUM_PHOTOS = [
   { src: 'img/firstmeet.jpg', caption: 'Lần đầu gặp gỡ của chún ta ✨' },
   { src: 'img/30_4.jpg', caption: 'gêm gủng xuyên đêm 30/4, thức qua ngày mới đánh nhà hát tới sáng' },
   { src: 'img/pink.jpg', caption: 'Hồng hồng chiều muộn hoàng hônnnn 🌇' },
-  { src: 'img/vozer.jpg', caption: 'chị tui 2016 - 2004 = 14 =))))))' },
-  { src: 'img/thamlam.jpg', caption: 'còn dự án ma mấy char c2 nữa 👻' },
-  { src: 'img/bucanhmuanaocungspam.jpg', caption: 'Bức ảnh mùa nào cũng thấyyyy' },
+  { src: 'img/thamlam.jpg', caption: 'còn dự án mấy char c2 nữa' },
+  { src: 'img/bucanhmuanaocungspam.jpg', caption: '=)))))))))))))' },
   { src: 'img/quansu.jpg', caption: 'sau khi ra khỏi khu quân sự' },
   { src: 'img/leocay.jpg', caption: 'chị tui thực sự leo chay lên cái cây 1 tỉ km =)))))' },
   { src: 'img/doa.jpg', caption: '...' },
   { src: 'img/laudai.jpg', caption: 'nhặt rương ở lâu đàiiii 🏰' },
   { src: 'img/daosuongmu.jpg', caption: 'nhặt rương ở đảo sương mùuuu 🌫️🌫️' },
-  { src: 'img/chiem.jpg', caption: '=))))' },
   { src: 'img/anh3.jpg', caption: 'cảm ưn cậu gất nhiềuuuu 🫰' },
   { src: 'img/anh1.jpg', caption: '2 cha con nè' },
   { src: 'img/anh2.jpg', caption: 'cảm ơn cậu đã xem tới đâyyyyy ✨💫' },
